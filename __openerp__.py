@@ -29,7 +29,10 @@
     'depends': [
         'product',
     ],
-    'data': [],
+    'data': [
+        'views/category_view.xml',
+        'views/product_view.xml',
+        ],
     'active': False,
     'installable': True
 }
