@@ -19,22 +19,4 @@
 #
 ##############################################################################
 
-{
-    'name': 'Product Code by Category',
-    'version': '0.1',
-    'category': 'Product',
-    'author': 'ApuliaSoftware S.r.l. <info@apuliasoftware.it>',
-    'website': 'www.apuliasoftware.it',
-    'license': 'AGPL-3',
-    'depends': [
-        'product',
-    ],
-    'data': [
-        'views/category_view.xml',
-        'views/product_view.xml',
-        'wizard/update_code.xml',
-        ],
-    'active': False,
-    'installable': True
-}
-
+from . import update_code

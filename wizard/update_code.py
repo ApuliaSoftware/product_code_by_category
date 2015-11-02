@@ -19,22 +19,29 @@
 #
 ##############################################################################
 
-{
-    'name': 'Product Code by Category',
-    'version': '0.1',
-    'category': 'Product',
-    'author': 'ApuliaSoftware S.r.l. <info@apuliasoftware.it>',
-    'website': 'www.apuliasoftware.it',
-    'license': 'AGPL-3',
-    'depends': [
-        'product',
-    ],
-    'data': [
-        'views/category_view.xml',
-        'views/product_view.xml',
-        'wizard/update_code.xml',
-        ],
-    'active': False,
-    'installable': True
-}
 
+from openerp import models, api
+
+
+class UpdateProductCode(models.TransientModel):
+
+    _name = 'update.product.code'
+
+    @api.multi
+    def update_code(self):
+        products = self.env['product.product'].browse(
+            self.env.context.get('active_ids', []))
+        products.update_sequence()
+        return {'type': 'ir.actions.act_window_close'}
+
+
+class UpdateTemplateCode(models.TransientModel):
+
+    _name = 'update.template.code'
+
+    @api.multi
+    def update_code(self):
+        templates = self.env['product.template'].browse(
+            self.env.context.get('active_ids', []))
+        templates.update_sequence()
+        return {'type': 'ir.actions.act_window_close'}
