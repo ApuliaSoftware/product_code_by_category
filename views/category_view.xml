@@ -2,8 +2,8 @@
 <openerp>
 <data>
 
-    <record id="product_code_by_category_category_form" model="ir.ui.view">
-        <field name="name">product.code.by.category.category.form.view</field>
+    <record id="auto_code_product_category_view" model="ir.ui.view">
+        <field name="name">auto.code.product.category.form.view</field>
         <field name="model">product.category</field>
         <field name="inherit_id" ref="product.product_category_form_view"/>
         <field name="arch" type="xml">
@@ -17,8 +17,8 @@
         </field>
     </record>
 
-    <record id="product_code_by_category_search" model="ir.ui.view">
-        <field name="name">product.code.by.category.search.prefix.category</field>
+    <record id="auto_code_product_search_prefix_category" model="ir.ui.view">
+        <field name="name">auto.code.product.search.prefix.category</field>
         <field name="model">product.category</field>
         <field name="inherit_id" ref="product.product_category_search_view"/>
         <field name="arch" type="xml">

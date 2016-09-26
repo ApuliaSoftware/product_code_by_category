@@ -1,26 +1,12 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-# Copyright (C) 2015 ApuliaSoftware S.r.l. <info@apuliasoftware.it>
-# All Rights Reserved
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published
-#    by the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2016 Apulia Software S.r.l. (<info@apuliasoftware.it>)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
 from openerp import models, fields, api, SUPERUSER_ID
+import json
+import re
+from openerp.exceptions import Warning as UserError
 
 
 class ProductCategory(models.Model):
@@ -44,7 +30,7 @@ class ProductCategory(models.Model):
             parent = self.browse(vals['parent_id']).name_get()
             name = '%s / %s' % (parent[0][1], name)
         sequence_code = self.env['ir.sequence.type'].search(
-            [('code', '=', 'product.code.by.category')]) or ''
+            [('code', '=', 'base.product.auto.sequence')]) or ''
         if sequence_code:
             sequence_code = sequence_code.code
         seq = {
@@ -63,6 +49,19 @@ class ProductCategory(models.Model):
             seq_id = self.sudo().create_sequence(vals)
             vals.update({'sequence_id': seq_id.id})
         return super(ProductCategory, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        if not vals.get('sequence_id', False) \
+                and vals.get('use_sequence', False):
+            name = self.name
+            if vals.get('name', False):
+                name = vals.get('name')
+            seq_id = self.env['ir.sequence'].search([('name', '=', name)])
+            if not seq_id:
+                seq_id = self.sudo().create_sequence(vals)
+            vals.update({'sequence_id': seq_id.id})
+        return super(ProductCategory, self).write(vals)
 
     @api.multi
     @api.depends('name', 'code')
@@ -92,6 +91,7 @@ class ProductCategory(models.Model):
     @api.model
     def name_search(self, name='', args=None, operator='ilike', context=None,
                     limit=100):
+        name = re.sub(r"\[\w+\] ", "", name)
         res = super(ProductCategory, self).name_search(
             name, args, operator, limit=limit, context=context)
         if not name:
@@ -117,29 +117,14 @@ class ProductCategory(models.Model):
         return code
 
 
-class ProductTemplate(models.Model):
-
-    _inherit = 'product.template'
-
-    @api.multi
-    def update_sequence(self):
-        product_model = self.env['product.product']
-        for template in self:
-            values = product_model._get_sequence_vals({
-                'product_tmpl_id': template.id,
-                })
-            if values.get('default_code', ''):
-                template.write(values)
-        return True
-
-
 class ProductProduct(models.Model):
 
     _inherit = 'product.product'
 
     def _get_sequence_vals(self, values):
         categ_id = False
-        if values.get('categ_id', False) and not values.get('default_code', ''):
+        if values.get('categ_id', False) \
+                and not values.get('default_code', ''):
             categ_id = values['categ_id']
         elif values.get('product_tmpl_id', False):
             categ_id = self.env['product.template'].browse(
@@ -153,7 +138,8 @@ class ProductProduct(models.Model):
                 # ----- check if code exist
                 if self.env['product.product'].search([('default_code',
                                                         '=', default_code)]):
-                    raise Exception('The code %s already exists', default_code)
+                    raise UserError(
+                        _('The code {} already exists'.format(default_code)))
                 values.update({
                     'default_code': default_code, })
         return values
@@ -170,7 +156,11 @@ class ProductProduct(models.Model):
 
     @api.model
     def create(self, values):
-        # ----- Create the product code
+        """
+            Create the product code (based on Customer standard)
+            if user create a new product
+        """
         if not values.get('default_code', False):
             values = self._get_sequence_vals(values)
-        return super(ProductProduct, self).create(values)
+        product = super(ProductProduct, self).create(values)
+        return product

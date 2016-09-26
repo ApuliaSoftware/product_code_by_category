@@ -1,25 +1,30 @@
-.. image:: http://apuliasoftware.it/website/image?field=datas&model=ir.attachment&id=16
-   :alt: Apulia Software Srl
-   :target: http://www.apuliasoftware.it
-
-* ApuliaSoftware S.r.l. <info@apuliasoftware.it>
-
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License
 
-Module name
-===========
+Product Code from Category
+==========================
 
-This module was written to extend the functionality of product to create automatically product code from category codification
+This module was written to extend the functionality of product detail to create
+a sequenced product code based on category structure
+
+
+Configuration
+=============
+
+To configure this module, you need to:
+
+    * set a sequence for your existing category
 
 Usage
 =====
 
 To use this module, you need to:
 
- * go to Product Category
- * set a code (that autogenerate a prefix-code)
- * set "use sequence" if you need to autogenerate code for product in relation with this category
+ * unable "use sequence" on your category if create a new category Odoo create
+   a sequence for new record
+ * set your category on product to assign a code, or launch "UPDATE CODE"
+ * launch "Update Code" wizard from product list
+
 
 For further information, please visit:
 
@@ -40,4 +45,4 @@ Maintainer
    :alt: Apulia Software Srl
    :target: http://www.apuliasoftware.it
 
-* ApuliaSoftware S.r.l. <info@apuliasoftare.it>
+* ApuliaSoftware S.r.l. <info@apuliasoftware.it>

@@ -1,0 +1,145 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* product_code_from_category
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-26 13:37+0000\n"
+"PO-Revision-Date: 2016-09-26 13:37+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_code_from_category
+#: view:update.product.code:product_code_from_category.wizard_update_code_product
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: product_code_from_category
+#: field:product.category,code:0
+msgid "Code"
+msgstr "Codice"
+
+#. module: product_code_from_category
+#: field:update.product.code,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: product_code_from_category
+#: field:update.product.code,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: product_code_from_category
+#: field:product.product,taxes_id:0
+msgid "Customer Taxes"
+msgstr "Imposte di Vendita"
+
+#. module: product_code_from_category
+#: field:update.product.code,display_name:0
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: product_code_from_category
+#: field:product.product,property_account_expense:0
+msgid "Expense Account"
+msgstr "Conto di Costo"
+
+#. module: product_code_from_category
+#: field:update.product.code,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: product_code_from_category
+#: field:product.product,property_account_income:0
+msgid "Income Account"
+msgstr "Conto di Ricavo"
+
+#. module: product_code_from_category
+#: field:update.product.code,__last_update:0
+msgid "Last Modified on"
+msgstr "Last Modified on"
+
+#. module: product_code_from_category
+#: field:update.product.code,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: product_code_from_category
+#: field:update.product.code,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: product_code_from_category
+#: field:product.category,prefix_code:0
+msgid "Prefix code"
+msgstr "Prefisso codice"
+
+#. module: product_code_from_category
+#: model:ir.model,name:product_code_from_category.model_product_product
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: product_code_from_category
+#: model:ir.model,name:product_code_from_category.model_product_category
+msgid "Product Category"
+msgstr "Categoria Prodotto"
+
+#. module: product_code_from_category
+#: field:product.category,sequence_id:0
+msgid "Sequence id"
+msgstr "Sequenza"
+
+#. module: product_code_from_category
+#: field:product.product,supplier_taxes_id:0
+msgid "Supplier Taxes"
+msgstr "Imposte di Acquisto"
+
+#. module: product_code_from_category
+#: code:addons/product_code_from_category/models/product.py:142
+#, python-format
+msgid "The code {} already exists"
+msgstr "Il codice {} esiste gia'"
+
+#. module: product_code_from_category
+#: help:product.product,property_account_expense:0
+msgid "This account will be used for invoices instead of the default one to value expenses for the current product."
+msgstr "Questo conto verrà utilizzato nelle fatture al posto di quello al valore di default per le spese per il prodotto corrente ."
+
+#. module: product_code_from_category
+#: help:product.product,property_account_income:0
+msgid "This account will be used for invoices instead of the default one to value sales for the current product."
+msgstr "Questo conto verrà utilizzato nelle fatture al posto di quello al valore di default per i ricavi per il prodotto corrente."
+
+#. module: product_code_from_category
+#: view:update.product.code:product_code_from_category.wizard_update_code_product
+msgid "Update"
+msgstr "Aggiorna"
+
+#. module: product_code_from_category
+#: model:ir.actions.act_window,name:product_code_from_category.act_update_code_product
+#: model:ir.actions.act_window,name:product_code_from_category.action_update_code_product
+#: view:update.product.code:product_code_from_category.wizard_update_code_product
+msgid "Update Code"
+msgstr "Aggiorna Codice"
+
+#. module: product_code_from_category
+#: field:product.category,use_sequence:0
+msgid "Use Sequence"
+msgstr "Usa sequenza"
+
+#. module: product_code_from_category
+#: view:update.product.code:product_code_from_category.wizard_update_code_product
+msgid "or"
+msgstr "o"
+
+#. module: product_code_from_category
+#: view:product.product:product_code_from_category.code_on_product_normal_form_view
+#: view:product.template:product_code_from_category.prod_fiscal_category_form
+msgid "⇒ Recompute Code"
+msgstr "⇒ Ricalcola codice"

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="base_product_auto_sequence" model="ir.sequence.type">
+            <field name="name">Product code auto sequence</field>
+            <field name="code">base.product.auto.sequence</field>
+        </record>
+
+    </data>
+</openerp>
