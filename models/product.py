@@ -3,8 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, fields, api, SUPERUSER_ID
-import json
+from openerp import models, fields, api, _
 import re
 from openerp.exceptions import Warning as UserError
 
@@ -19,16 +18,9 @@ class ProductCategory(models.Model):
     prefix_code = fields.Char(compute='_prefix_code', store=True)
 
     @api.multi
-    def create_sequence(self, vals):
+    def create_sequence(self, record):
         # Create new no_gap entry sequence for every new category
-        name = ''
-        if vals.get('name', False):
-            name = vals['name']
-        if vals.get('code', False):
-            name = '[%s] %s' % (vals['code'], name)
-        if vals.get('parent_id', False):
-            parent = self.browse(vals['parent_id']).name_get()
-            name = '%s / %s' % (parent[0][1], name)
+        name = record.name_get()[0][1]
         sequence_code = self.env['ir.sequence.type'].search(
             [('code', '=', 'base.product.auto.sequence')]) or ''
         if sequence_code:
@@ -44,43 +36,45 @@ class ProductCategory(models.Model):
 
     @api.model
     def create(self, vals):
-        if not vals.get('sequence_id', False) and vals.get('use_sequence',
-                                                           False):
-            seq_id = self.sudo().create_sequence(vals)
-            vals.update({'sequence_id': seq_id.id})
-        return super(ProductCategory, self).create(vals)
+        res = super(ProductCategory, self).create(vals)
+        if not res.sequence_id and res.use_sequence:
+            seq_id = res.sudo().create_sequence(res)
+            res.sequence_id = seq_id.id
+        return res
 
     @api.multi
     def write(self, vals):
-        if not vals.get('sequence_id', False) \
-                and vals.get('use_sequence', False):
-            name = self.name
-            if vals.get('name', False):
-                name = vals.get('name')
-            seq_id = self.env['ir.sequence'].search([('name', '=', name)])
-            if not seq_id:
-                seq_id = self.sudo().create_sequence(vals)
-            vals.update({'sequence_id': seq_id.id})
-        return super(ProductCategory, self).write(vals)
-
-    @api.multi
-    @api.depends('name', 'code')
-    def name_get(self):
-        # OVERRIDE STANDARD NAME_GET
-        reads = self.read(['name', 'code', 'parent_id'])
-        res = []
-        for record in reads:
-            name = record['name']
-            if record['code']:
-                name = '[%s] %s' % (record['code'], name)
-            if record['parent_id']:
-                parent_name = record['parent_id'][1]
-                name = '%s / %s' % (parent_name, name)
-            res.append((record['id'], name))
+        res = super(ProductCategory, self).write(vals)
+        for cat in self:
+            seq_id = self.sequence_id
+            if not cat.sequence_id and cat.use_sequence:
+                name = cat.name_get()[0][1]
+                seq_id = cat.env['ir.sequence'].search([('name', '=', name)])
+                if not seq_id:
+                    seq_id = cat.sudo().create_sequence(cat)
+                cat.sequence_id = seq_id.id
+            if seq_id:
+                cat.update_cat_seq_name(cat, seq_id)
         return res
 
+    @api.multi
+    def name_get(self):
+        def get_names(cat):
+            """ Return the list [cat.name, cat.parent_id.name, ...] """
+            res = []
+            while cat:
+                if cat.code:
+                    res.append('[{code}] {name}'.format(
+                        code=cat.code, name=cat.name))
+                else:
+                    res.append('{name}'.format(name=cat.name))
+                cat = cat.parent_id
+            return res
+
+        return [(cat.id, " / ".join(reversed(get_names(cat)))) for cat in self]
+
     @api.one
-    @api.depends('code', 'parent_id')
+    @api.depends('code', 'parent_id', 'parent_id.code')
     def _prefix_code(self):
         code = self.code or ''
         if self.parent_id:
@@ -96,8 +90,13 @@ class ProductCategory(models.Model):
             name, args, operator, limit=limit, context=context)
         if not name:
             return res
+        list_id = []
+        for tpl in res:
+            list_id.append(tpl[0])
         codes = self.search([
-            ('prefix_code', operator, name)])
+            ('prefix_code', operator, name),
+            ('id', 'not in', list_id)
+        ])
         if not codes:
             return res
         for code in codes:
@@ -116,6 +115,8 @@ class ProductCategory(models.Model):
                 sequence=sequence_model.next_by_id(category.sequence_id.id))
         return code
 
+    def update_cat_seq_name(self, cat, seq):
+        seq.name = cat.name_get()[0][1]
 
 class ProductProduct(models.Model):
 

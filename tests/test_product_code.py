@@ -93,4 +93,3 @@ class TestProductCode(TransactionCase):
         sequence = self.env['ir.sequence'].create(seq)
         my_category.write({'use_sequence': True})
         self.assertEqual(sequence.id, my_category.sequence_id.id)
-
